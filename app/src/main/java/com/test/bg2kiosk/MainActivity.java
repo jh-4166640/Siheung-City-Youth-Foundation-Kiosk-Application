@@ -1,5 +1,5 @@
 package com.test.bg2kiosk;
-
+//MainActivity.java
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,6 +18,7 @@ public class MainActivity extends AppCompatActivity {
         // ViewBinding 초기화
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
 
         // TabLayout 및 ViewPager2 초기화
         setupViewPagerAndTabs();

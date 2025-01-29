@@ -44,8 +44,5 @@ dependencies {
     androidTestImplementation(libs.espresso.core)
     implementation("com.google.android.material:material:1.9.0")
     implementation("androidx.viewpager2:viewpager2:1.1.0-beta01")
-    implementation("org.apache.poi:poi-ooxml:5.2.3")
-    implementation("org.apache.poi:poi-ooxml-schemas:4.1.2")
-    implementation("org.apache.commons:commons-collections4:4.4")
  //   implementation("org.apache.commons:commons-io:2.7.0")
 }

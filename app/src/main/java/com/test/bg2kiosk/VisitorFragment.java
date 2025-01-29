@@ -1,5 +1,5 @@
 package com.test.bg2kiosk;
-
+//VisitorFragment.java
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,9 +7,12 @@ import android.view.ViewGroup;
 
 import android.widget.ToggleButton;
 import androidx.fragment.app.Fragment;
+
+
 import com.test.bg2kiosk.databinding.FragmentVisitorBinding; // 바인딩 클래스 임포트
 import android.widget.Toast;
 import java.util.ArrayList;
+
 
 public class VisitorFragment extends Fragment {
     protected final int BUFFER_SIZE = 100;
@@ -20,8 +23,10 @@ public class VisitorFragment extends Fragment {
     protected static int visitorCnt = 0;
     protected int[][] buffer_visitorData = new int[BUFFER_SIZE][LENTH_OF_DATA]; // arraylist로 변경하기
     private FragmentVisitorBinding binding; // ViewBinding 객체
-    protected int numOfSpaces = 5;  // 예시로 10개의 ToggleButton 생성
+    protected static int numOfSpaces = 5;  // 예시로 5개의 ToggleButton 생성
     protected ArrayList<String> spaceName= new ArrayList<>();
+
+
 
     public void setNumOfSpaces(int num){
         numOfSpaces=num;
@@ -29,7 +34,7 @@ public class VisitorFragment extends Fragment {
     public int getNumOfSpaces(){
         return numOfSpaces;
     }
-    public void setSpace(String[] Names){
+    public void setSpaceName(String[] Names){
         spaceName.clear();
         this.numOfSpaces = Names.length;
         for(int i= 0;i< Names.length;i++)
@@ -109,26 +114,9 @@ public class VisitorFragment extends Fragment {
                 checkedAge = true;
             }
         });
+        SpaceSelectCreate();
 
 
-        // 동적으로 ToggleButton 추가
-        for (int i = 0; i < numOfSpaces; i++) {
-            // ToggleButton 생성
-            ToggleButton toggleButton = new ToggleButton(getContext());
-            try{
-                toggleButton.setText(spaceName.get(i));
-                toggleButton.setTextOn(spaceName.get(i));
-                toggleButton.setTextOff(spaceName.get(i));
-            } catch(IndexOutOfBoundsException e){
-                toggleButton.setText("시설 이름을 설정하지 않았습니다.");
-                toggleButton.setTextOn("시설 이름을 설정하지 않았습니다.");
-                toggleButton.setTextOff("시설 이름을 설정하지 않았습니다.");
-            }
-            toggleButton.setId(View.generateViewId());  // 고유 ID 설정
-
-            // ToggleButton을 LinearLayout에 추가
-            binding.SpaceButtonContainer.addView(toggleButton);
-        }
         // 확인 버튼 클릭 시 선택된 정보 처리
         binding.btnSubmit.setOnClickListener(v -> {
             if(checkedGender == false) {
@@ -154,5 +142,27 @@ public class VisitorFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null; // ViewBinding 객체 해제
+    }
+    public void SpaceSelectCreate(){
+        binding.SpaceButtonContainer.removeAllViews();
+
+        // 동적으로 ToggleButton 추가
+        for (int i = 0; i < numOfSpaces; i++) {
+            // ToggleButton 생성
+            ToggleButton toggleButton = new ToggleButton(getContext());
+            try{
+                toggleButton.setText(spaceName.get(i));
+                toggleButton.setTextOn(spaceName.get(i));
+                toggleButton.setTextOff(spaceName.get(i));
+            } catch(IndexOutOfBoundsException e){
+                toggleButton.setText("시설 이름을 설정하지 않았습니다.");
+                toggleButton.setTextOn("시설 이름을 설정하지 않았습니다.");
+                toggleButton.setTextOff("시설 이름을 설정하지 않았습니다.");
+            }
+            toggleButton.setId(View.generateViewId());  // 고유 ID 설정
+
+            // ToggleButton을 LinearLayout에 추가
+            binding.SpaceButtonContainer.addView(toggleButton);
+        }
     }
 }
