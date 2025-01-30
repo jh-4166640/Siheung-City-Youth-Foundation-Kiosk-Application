@@ -44,5 +44,7 @@ dependencies {
     androidTestImplementation(libs.espresso.core)
     implementation("com.google.android.material:material:1.9.0")
     implementation("androidx.viewpager2:viewpager2:1.1.0-beta01")
- //   implementation("org.apache.commons:commons-io:2.7.0")
+    //implementation("android.arch.lifecycle:viewmodel:1.1.1")
+    //implementation("android.arch.lifecycle:extensions:1.1.1")
+    //implementation("org.apache.commons:commons-io:2.7.0")
 }

@@ -27,12 +27,14 @@ public class loginFragment extends Fragment {
         loginBinding.loginButton.setOnClickListener(v -> {
             String getpassword = loginBinding.adminPassword.getText().toString();
             if(getpassword.equals(admin_password) && getpassword  != null){
+                loginBinding.adminPassword.setText("");
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
                 transaction.replace(R.id.fragment_container, new AdminFragment());
                 transaction.addToBackStack(null);  // 뒤로 가기 버튼을 눌렀을 때 이전 Fragment로 돌아가기
                 transaction.commit();
             }
             else{
+                loginBinding.adminPassword.setText("");
                 Toast.makeText(getContext(), "비밀번호가 일치하지 않습니다.", Toast.LENGTH_SHORT).show();
             }
         });

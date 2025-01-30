@@ -6,11 +6,13 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
+//import androidx.fragment.app.activityViewModels;
 import com.test.bg2kiosk.databinding.FragmentAdminBinding; // 바인딩 클래스 임포트
 import android.widget.EditText;
 import android.widget.TableRow;
 import android.view.Gravity;
 import android.widget.Toast;
+import androidx.lifecycle.ViewModelProvider;
 
 
 import java.util.ArrayList;
@@ -18,12 +20,13 @@ import java.util.ArrayList;
 public class AdminFragment extends Fragment{
     private FragmentAdminBinding adminBinding;
     private static ArrayList<EditText> spaceList = new ArrayList<>();
-
-    VisitorFragment visitor = new VisitorFragment();
+    private SpaceViewModel spaceViewModel;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         adminBinding = FragmentAdminBinding.inflate(inflater, container, false);
+        spaceViewModel = new ViewModelProvider(requireActivity()).get(SpaceViewModel.class);
+
         adminBinding.addSpaceButton.setOnClickListener(v -> {
             addSpace();
         });
@@ -31,12 +34,11 @@ public class AdminFragment extends Fragment{
             delSpace();
         });
         adminBinding.SaveSpaceButton.setOnClickListener(v -> {
-            String[] spacenames = SaveSpaceInfo();
+            String[] spaceNames = SaveSpaceInfo();
+            spaceViewModel.setSpaceNames(spaceNames);
             Toast.makeText(getContext(), "변경사항이 저장되었습니다.", Toast.LENGTH_SHORT).show();
-
         });
-
-        CreateSpaceEditor(visitor.getNumOfSpaces());
+        CreateSpaceEditor(spaceViewModel.getNumOfSpace().getValue());
         //readExcelFile(filepath);
 
         return adminBinding.getRoot();
@@ -47,8 +49,12 @@ public class AdminFragment extends Fragment{
         adminBinding = null; // ViewBinding 객체 해제
     }
     public void CreateSpaceEditor(final int numSpace){
+        //Toast.makeText(getContext(), numSpace, Toast.LENGTH_SHORT).show();
+        if(numSpace == 0) return;
+        String[] cur_name = spaceViewModel.getSpaceNames().getValue();
         int rows = 0;
         int spcnt = 0;
+
         if(numSpace < 3)                            rows = 1;
         else if(numSpace > 3 && numSpace <= 6)      rows = 2;
         else if(numSpace > 6 && numSpace <= 9)      rows = 3;
@@ -70,7 +76,15 @@ public class AdminFragment extends Fragment{
             params.setMargins(50,0,100,50);
             for (int col = 0; col < cols; col++) {
                 EditText editSpace = new EditText(getContext());
-                editSpace.setHint("시설" + (spcnt+1) + "을 입력하세요");
+                if(spcnt <= cur_name.length-1){
+                    try{
+                        if(cur_name[spcnt] != null && cur_name[spcnt] != ""){
+                            editSpace.setText(cur_name[spcnt]);
+                        }
+                        else{ editSpace.setHint("시설" + (spcnt+1) + "을 입력하세요"); }
+                    } catch(IndexOutOfBoundsException e){editSpace.setHint("시설" + (spcnt+1) + "을 입력하세요");}
+                }
+                else {editSpace.setHint("시설" + (spcnt+1) + "을 입력하세요");}
                 editSpace.setHeight(100);
                 editSpace.setWidth(500);
                 editSpace.setLayoutParams(params);
@@ -84,7 +98,7 @@ public class AdminFragment extends Fragment{
     }
 
     private void addSpace() {
-        int cur_space = visitor.getNumOfSpaces();
+        int cur_space = spaceViewModel.getNumOfSpace().getValue();
         if(cur_space  >= 15) return;
         cur_space++;
         int rowCount = adminBinding.tableLayout.getChildCount();
@@ -124,10 +138,10 @@ public class AdminFragment extends Fragment{
             spaceList.add(editSpace);
             adminBinding.tableLayout.addView(new_tableRow);
         }
-        visitor.setNumOfSpaces(cur_space);
+        spaceViewModel.setNumOfSpace(cur_space);
     }
     private void delSpace(){
-        int cur_space = visitor.getNumOfSpaces();
+        int cur_space = spaceViewModel.getNumOfSpace().getValue();
         if(cur_space <= 1) return;
         int rowCount = adminBinding.tableLayout.getChildCount();
         if(rowCount == 0) return;
@@ -140,7 +154,7 @@ public class AdminFragment extends Fragment{
             if(lastRow.getChildCount() == 0){
                 adminBinding.tableLayout.removeView(lastRow);
             }
-            visitor.setNumOfSpaces(cur_space-1);
+            spaceViewModel.setNumOfSpace(cur_space-1);
         }
     }
     private String[] SaveSpaceInfo(){

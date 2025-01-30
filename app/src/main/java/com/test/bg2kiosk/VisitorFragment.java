@@ -7,7 +7,8 @@ import android.view.ViewGroup;
 
 import android.widget.ToggleButton;
 import androidx.fragment.app.Fragment;
-
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.test.bg2kiosk.databinding.FragmentVisitorBinding; // 바인딩 클래스 임포트
 import android.widget.Toast;
@@ -15,33 +16,20 @@ import java.util.ArrayList;
 
 
 public class VisitorFragment extends Fragment {
-    protected final int BUFFER_SIZE = 100;
-    protected final int LENTH_OF_DATA = 3;
-    protected int[] visitorData = new int[LENTH_OF_DATA];
+
     protected boolean checkedGender = false;
     protected boolean checkedAge = false;
+    private FragmentVisitorBinding binding; // ViewBinding 객체
+    private SpaceViewModel spaceViewModel;
+
+
+    /*data 쓰기 관련 변수*/
+    protected final int BUFFER_SIZE = 100;
+    protected final int LENTH_OF_DATA = 3;
     protected static int visitorCnt = 0;
     protected int[][] buffer_visitorData = new int[BUFFER_SIZE][LENTH_OF_DATA]; // arraylist로 변경하기
-    private FragmentVisitorBinding binding; // ViewBinding 객체
-    protected static int numOfSpaces = 5;  // 예시로 5개의 ToggleButton 생성
-    protected ArrayList<String> spaceName= new ArrayList<>();
+    protected int[] visitorData = new int[LENTH_OF_DATA];
 
-
-
-    public void setNumOfSpaces(int num){
-        numOfSpaces=num;
-    }
-    public int getNumOfSpaces(){
-        return numOfSpaces;
-    }
-    public void setSpaceName(String[] Names){
-        spaceName.clear();
-        this.numOfSpaces = Names.length;
-        for(int i= 0;i< Names.length;i++)
-        {
-            spaceName.add(Names[i]);
-        }
-    }
 
     public void resetDATA(){
         for(int i =0;i<LENTH_OF_DATA;i++){
@@ -74,7 +62,7 @@ public class VisitorFragment extends Fragment {
         resetDATA();
         // ViewBinding 초기화
         binding = FragmentVisitorBinding.inflate(inflater, container, false);
-
+        spaceViewModel = new ViewModelProvider(requireActivity()).get(SpaceViewModel.class);
         // 성별 RadioGroup 설정
         binding.radioGroupGender.setOnCheckedChangeListener((group, checkedId) -> {
             if (checkedId == binding.radioMale.getId()) {
@@ -114,7 +102,7 @@ public class VisitorFragment extends Fragment {
                 checkedAge = true;
             }
         });
-        SpaceSelectCreate();
+        SpaceSelectCreate(spaceViewModel.getSpaceNames().getValue(),spaceViewModel.getNumOfSpace().getValue());
 
 
         // 확인 버튼 클릭 시 선택된 정보 처리
@@ -134,6 +122,10 @@ public class VisitorFragment extends Fragment {
                 resetDATA();
             }
         });
+        spaceViewModel.getSpaceNames().observe(getViewLifecycleOwner(), names -> {
+            binding.SpaceButtonContainer.removeAllViews();
+            SpaceSelectCreate(spaceViewModel.getSpaceNames().getValue(),spaceViewModel.getNumOfSpace().getValue());
+        });
 
         // View 반환
         return binding.getRoot();
@@ -143,17 +135,16 @@ public class VisitorFragment extends Fragment {
         super.onDestroyView();
         binding = null; // ViewBinding 객체 해제
     }
-    public void SpaceSelectCreate(){
-        binding.SpaceButtonContainer.removeAllViews();
+    public void SpaceSelectCreate(String[] spaceName, int numOfSpaces){
 
         // 동적으로 ToggleButton 추가
         for (int i = 0; i < numOfSpaces; i++) {
             // ToggleButton 생성
             ToggleButton toggleButton = new ToggleButton(getContext());
             try{
-                toggleButton.setText(spaceName.get(i));
-                toggleButton.setTextOn(spaceName.get(i));
-                toggleButton.setTextOff(spaceName.get(i));
+                toggleButton.setText(spaceName[i]);
+                toggleButton.setTextOn(spaceName[i]);
+                toggleButton.setTextOff(spaceName[i]);
             } catch(IndexOutOfBoundsException e){
                 toggleButton.setText("시설 이름을 설정하지 않았습니다.");
                 toggleButton.setTextOn("시설 이름을 설정하지 않았습니다.");
