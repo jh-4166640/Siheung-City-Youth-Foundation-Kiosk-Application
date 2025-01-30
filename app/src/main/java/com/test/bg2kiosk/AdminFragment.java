@@ -78,7 +78,7 @@ public class AdminFragment extends Fragment{
                 EditText editSpace = new EditText(getContext());
                 if(spcnt <= cur_name.length-1){
                     try{
-                        if(cur_name[spcnt] != null && cur_name[spcnt] != ""){
+                        if(cur_name[spcnt] != null && cur_name[spcnt] != ""){ //.equals("")형태로 바꿀거임
                             editSpace.setText(cur_name[spcnt]);
                         }
                         else{ editSpace.setHint("시설" + (spcnt+1) + "을 입력하세요"); }

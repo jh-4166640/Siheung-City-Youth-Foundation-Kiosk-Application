@@ -7,12 +7,12 @@ import android.view.ViewGroup;
 
 import android.widget.ToggleButton;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
+//import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.test.bg2kiosk.databinding.FragmentVisitorBinding; // 바인딩 클래스 임포트
 import android.widget.Toast;
-import java.util.ArrayList;
+//import java.util.ArrayList;
 
 
 public class VisitorFragment extends Fragment {
