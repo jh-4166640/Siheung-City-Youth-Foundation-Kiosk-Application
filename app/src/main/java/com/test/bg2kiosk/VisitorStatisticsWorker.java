@@ -13,7 +13,7 @@ import java.util.Locale;
 
 
 public class VisitorStatisticsWorker extends Worker {
-    private SpaceViewModel spaceViewModel;
+    private final SpaceViewModel spaceViewModel;
     public VisitorStatisticsWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
         spaceViewModel = new ViewModelProvider.AndroidViewModelFactory((Application) getApplicationContext())
@@ -28,11 +28,11 @@ public class VisitorStatisticsWorker extends Worker {
         String[] spaceNames = spaceViewModel.getSpaceNames().getValue();
         // Room 데이터베이스 인스턴스 가져오기
         AppDatabase db = AppDatabase.getDatabase(getApplicationContext());
-
-        for(int idx = 0;idx<spaceNames.length;idx++){
-            db.visitorStatisticsDao().insert(new VisitorStatistics(currentDate, spaceNames[idx]));
+        if(spaceNames != null){
+            for(String spName : spaceNames){
+                db.visitorStatisticsDao().insert(new VisitorStatistics(currentDate, spName));
+            }
         }
-
         return Result.success();
     }
 

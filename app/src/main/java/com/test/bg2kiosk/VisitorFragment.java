@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.graphics.Color;
 
 import android.widget.CompoundButton;
 import android.widget.ToggleButton;
@@ -15,7 +16,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.test.bg2kiosk.databinding.FragmentVisitorBinding; // 바인딩 클래스 임포트
 import android.widget.Toast;
-//import java.util.ArrayList;
+import java.util.ArrayList;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -25,12 +26,13 @@ import java.util.concurrent.Executors;
 
 public class VisitorFragment extends Fragment {
 
-    protected boolean checkedGender = false;
-    protected boolean checkedAge = false;
+    protected boolean checkedGender;
+    protected boolean checkedAge;
     private FragmentVisitorBinding binding; // ViewBinding 객체
     private SpaceViewModel spaceViewModel;
     private int checkSpace = 0;
 
+    private ArrayList<ToggleButton> toggleButtonList = new ArrayList<>();
 
     /*data 쓰기 관련 변수*/
     protected final int LENTH_OF_DATA = 3;
@@ -87,7 +89,9 @@ public class VisitorFragment extends Fragment {
                 checkedAge = true;
             }
         });
-        SpaceSelectCreate(spaceViewModel.getSpaceNames().getValue(),spaceViewModel.getNumOfSpace().getValue());
+        if(spaceViewModel.getSpaceNames().getValue() != null && spaceViewModel.getNumOfSpace().getValue() != null) {
+            SpaceSelectCreate(spaceViewModel.getSpaceNames().getValue(), spaceViewModel.getNumOfSpace().getValue());
+        }
 
 
         // 확인 버튼 클릭 시 선택된 정보 처리
@@ -140,6 +144,11 @@ public class VisitorFragment extends Fragment {
                 checkedGender=false;
                 checkedAge=false;
                 checkSpace = 0;
+                for(ToggleButton tgbtn : toggleButtonList){
+                    tgbtn.setChecked(false);
+                    tgbtn.setBackgroundColor(Color.parseColor("#FFFFFF"));
+                }
+
             }
         });
         spaceViewModel.getSpaceNames().observe(getViewLifecycleOwner(), names -> {
@@ -156,7 +165,7 @@ public class VisitorFragment extends Fragment {
         binding = null; // ViewBinding 객체 해제
     }
     public void SpaceSelectCreate(String[] spaceName, int numOfSpaces){
-
+        toggleButtonList.clear();
         // 동적으로 ToggleButton 추가
         for (int i = 0; i < numOfSpaces; i++) {
             // ToggleButton 생성
@@ -165,6 +174,7 @@ public class VisitorFragment extends Fragment {
                 toggleButton.setText(spaceName[i]);
                 toggleButton.setTextOn(spaceName[i]);
                 toggleButton.setTextOff(spaceName[i]);
+                toggleButton.setBackgroundColor(Color.parseColor("#FFFFFF"));
             } catch(IndexOutOfBoundsException e){
                 toggleButton.setText("시설 이름을 설정하지 않았습니다.");
                 toggleButton.setTextOn("시설 이름을 설정하지 않았습니다.");
@@ -175,17 +185,17 @@ public class VisitorFragment extends Fragment {
 
             //toggleButton.setId(View.generateViewId());
             toggleButton.setId(toggleId.hashCode());  // 고유 ID 설정
-            toggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                    if(isChecked){
-                        checkSpace |= (int)Math.pow(2,idx);
-                    }
-                    else{
-                        checkSpace &= ~(int)Math.pow(2,idx);
-                    }
+            toggleButton.setOnCheckedChangeListener((compoundButton, isChecked) -> {
+                if(isChecked){
+                    checkSpace |= (int)Math.pow(2,idx);
+                    toggleButton.setBackgroundColor(Color.parseColor("#FFD400"));
+                }
+                else{
+                    checkSpace &= ~(int)Math.pow(2,idx);
+                    toggleButton.setBackgroundColor(Color.parseColor("#FFFFFF"));
                 }
             });
+            toggleButtonList.add(toggleButton);
             // ToggleButton을 LinearLayout에 추가
             binding.SpaceButtonContainer.addView(toggleButton);
         }

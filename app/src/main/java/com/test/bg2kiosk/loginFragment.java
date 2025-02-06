@@ -2,6 +2,8 @@ package com.test.bg2kiosk;
 //loginFragment.java
 import android.app.AlertDialog;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 //import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -21,13 +23,14 @@ public class loginFragment extends Fragment {
     private final String MASTERKEY = "223";
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         loginBinding = FragmentLoginBinding.inflate(inflater, container, false);
         loginBinding.loginButton.setOnClickListener(v -> {
             String getpassword = loginBinding.adminPassword.getText().toString();
-            if(getpassword.equals(admin_password) && getpassword  != null){
+            if(getpassword.equals(admin_password)){
                 loginBinding.adminPassword.setText("");
+                assert getFragmentManager() != null;
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
                 transaction.replace(R.id.fragment_container, new AdminFragment());
                 transaction.addToBackStack(null);  // 뒤로 가기 버튼을 눌렀을 때 이전 Fragment로 돌아가기

@@ -18,9 +18,7 @@ import android.app.PendingIntent;
 import android.content.Intent;
 
 import java.util.Calendar;
-import android.os.SystemClock;
-import androidx.work.PeriodicWorkRequest;
-import androidx.work.WorkManager;
+
 
 public class MainActivity extends AppCompatActivity {
 

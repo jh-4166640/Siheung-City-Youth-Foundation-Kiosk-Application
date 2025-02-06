@@ -75,30 +75,29 @@
     </TableLayout>
 
 
-    <!-- 파일 선택기
-
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
+        android:orientation="horizontal"
+        android:layout_marginTop="30dp"
         android:padding="16dp">
+
+        <TextView
+            android:id="@+id/tvFileName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="선택된 파일 경로: 없음" />
 
 
         <Button
-            android:id="@+id/btnSelectFile"
-            android:layout_width="match_parent"
+            android:id="@+id/btnSaveXLSXdata"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="파일 선택" />
+            android:text="데이터 저장"
+            android:layout_marginLeft="16dp"/>
 
-
-        <TextView
-            android:id="@+id/tvFilePath"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="선택된 파일 경로: 없음"
-            android:paddingTop="16dp" />
     </LinearLayout>
-    -->
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
