@@ -10,12 +10,15 @@ import android.widget.CompoundButton;
 import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
+
+
 import androidx.fragment.app.Fragment;
 //import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.test.bg2kiosk.databinding.FragmentVisitorBinding; // 바인딩 클래스 임포트
 import android.widget.Toast;
+
 import java.util.ArrayList;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -32,6 +35,7 @@ public class VisitorFragment extends Fragment {
     private SpaceViewModel spaceViewModel;
     private int checkSpace = 0;
 
+
     private ArrayList<ToggleButton> toggleButtonList = new ArrayList<>();
 
     /*data 쓰기 관련 변수*/
@@ -42,7 +46,7 @@ public class VisitorFragment extends Fragment {
     public VisitorFragment() {
         checkedGender = false;
         checkedAge = false;
-        //spaceName[0]="테스트";
+        checkSpace = 0;
     }
 
     @Override
@@ -148,7 +152,6 @@ public class VisitorFragment extends Fragment {
                     tgbtn.setChecked(false);
                     tgbtn.setBackgroundColor(Color.parseColor("#FFFFFF"));
                 }
-
             }
         });
         spaceViewModel.getSpaceNames().observe(getViewLifecycleOwner(), names -> {
