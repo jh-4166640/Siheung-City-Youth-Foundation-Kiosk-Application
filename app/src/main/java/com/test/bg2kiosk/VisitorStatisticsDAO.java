@@ -16,6 +16,9 @@ public interface VisitorStatisticsDAO {
     @Update
     void update(VisitorStatistics visitorStatistics);
 
+    @Query("DELETE FROM visitor_statistics")
+    void deleteAll(); // 전체 삭제
+
     // 날짜별로 특정 시설, 나이 그룹에 해당하는 데이터를 조회
     @Query("SELECT * FROM visitor_statistics WHERE date = :date AND spaceName = :spaceName")
     VisitorStatistics getStatistics(String date, String spaceName);

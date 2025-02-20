@@ -1,6 +1,7 @@
 package com.test.bg2kiosk;
 //VisitorFragment.java
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,7 +67,7 @@ public class VisitorFragment extends Fragment {
             }
         });
 
-        // 성별을 선택하면서 이미 1과 2가 더해져 있으므로
+
         binding.radioGroupAge.setOnCheckedChangeListener((group, checkedId) -> {
             if (checkedId == binding.age1to8.getId()){ // 유아 .. matching 남(9), 여(10)
                 visitorData[1] = 0;
@@ -110,14 +111,24 @@ public class VisitorFragment extends Fragment {
                 // space 선택 확인 함수
                 String today = new SimpleDateFormat("yyyy-MM-dd", Locale.KOREAN).format(new Date());
                 ExecutorService executor = Executors.newSingleThreadExecutor();
-                executor.execute(()->{
+                executor.execute(()-> {
                     AppDatabase db = AppDatabase.getDatabase(getContext());
                     int exp = 0;
-                    for(String name : spaceViewModel.getSpaceNames().getValue()){
+                    boolean insert_check = false;
+                    String[] task = spaceViewModel.getSpaceTask().getValue();
+                    String[] classification = spaceViewModel.getProgramClassification().getValue();
+                    String[] area = spaceViewModel.getProgramArea().getValue();
+                    for (String name : spaceViewModel.getSpaceNames().getValue()) {
                         VisitorStatistics statistics = db.visitorStatisticsDao().getStatistics(today, name);
-                        if(statistics == null) statistics = new VisitorStatistics(today, name);
-                        if((checkSpace & (int)Math.pow(2,exp)) == (int)Math.pow(2,exp)){
-                            switch(visitorData[1]){
+                        if (statistics == null) {
+                            Log.d("statistics null","null!!!!!");
+                            statistics = new VisitorStatistics(today, task[exp], classification[exp], area[exp], name);
+                            insert_check = true;
+                        }
+                        Log.d("checkSpace", checkSpace + "");
+                        Log.d("susic", (checkSpace & (int) Math.pow(2, exp)) + "");
+                        if ((checkSpace & (int) Math.pow(2, exp)) == (int) Math.pow(2, exp)) {
+                            switch (visitorData[1]) {
                                 case 0:
                                     statistics.Increase_infant(visitorData[0]);
                                     break;
@@ -125,33 +136,41 @@ public class VisitorFragment extends Fragment {
                                 case 2:
                                 case 3:
                                 case 4:
-                                    statistics.Increase_youth(visitorData[0],visitorData[1]);
+                                    statistics.Increase_youth(visitorData[0], visitorData[1]);
                                     break;
                                 case 5:
                                     statistics.Increase_adult(visitorData[0]);
                                     break;
                             }
                         }
+                        statistics.show_statistics();
                         int currentExp = exp;
+
                         getActivity().runOnUiThread(() -> {
-                            String toggleId = "toggleSpace"+currentExp;
+                            String toggleId = "toggleSpace" + currentExp;
                             binding.getRoot().findViewById(toggleId.hashCode()).setSelected(false);
                         });
-                        db.visitorStatisticsDao().update(statistics); //room에 저장
+                        if(insert_check){
+                            db.visitorStatisticsDao().insert(statistics);
+                            insert_check=false;
+                        } else{
+                            db.visitorStatisticsDao().update(statistics); //room에 저장
+                        }
                         exp++;
                     }
-
+                    getActivity().runOnUiThread(() -> {
+                        binding.radioGroupGender.clearCheck();
+                        binding.radioGroupAge.clearCheck();
+                        //버튼 초기화 필수
+                        checkedGender = false;
+                        checkedAge = false;
+                        checkSpace = 0;
+                        for (ToggleButton tgbtn : toggleButtonList) {
+                            tgbtn.setChecked(false);
+                            tgbtn.setBackgroundColor(Color.parseColor("#FFFFFF"));
+                        }
+                    });
                 });
-                binding.radioGroupGender.clearCheck();
-                binding.radioGroupAge.clearCheck();
-                //버튼 초기화 필수
-                checkedGender=false;
-                checkedAge=false;
-                checkSpace = 0;
-                for(ToggleButton tgbtn : toggleButtonList){
-                    tgbtn.setChecked(false);
-                    tgbtn.setBackgroundColor(Color.parseColor("#FFFFFF"));
-                }
             }
         });
         spaceViewModel.getSpaceNames().observe(getViewLifecycleOwner(), names -> {

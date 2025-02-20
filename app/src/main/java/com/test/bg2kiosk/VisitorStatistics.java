@@ -1,21 +1,33 @@
 package com.test.bg2kiosk;
+import android.util.Log;
+
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 import androidx.room.ColumnInfo;
 
+/*
+ * date | SpaceTask | SpaceClassification | SpaceArea | spaceName |
+ * Total | total_youth | age9to13_male | age9to13_female |
+ * age14to16_male | age14to16_female | age17to19_male | age17to19_female |
+ * age20to24_male | age20to24_female | total_infant | age0to8_male | age0to8_female |
+ * total_adult | age25over_male | age25over_female
+ */
 @Entity(tableName = "visitor_statistics")
 public class VisitorStatistics {
     @PrimaryKey(autoGenerate = true)
     private int id; // 기본 키를 auto-generate로 설정
 
-    /*
-     * date | spaceName | Total | total_youth | age9to13_male | age9to13_female |
-     * age14to16_male | age14to16_female | age17to19_male | age17to19_female |
-     * age20to24_male | age20to24_female | total_infant | age0to8_male | age0to8_female |
-     * total_adult | age25over_male | age25over_female
-     */
     @ColumnInfo(name = "date")
     private String date;
+
+    @ColumnInfo(name = "spaceTask")
+    private String spaceTask;
+
+    @ColumnInfo(name = "spaceClassification")
+    private String spaceClassification;
+
+    @ColumnInfo(name = "spaceArea")
+    private String spaceArea;
 
     @ColumnInfo(name = "spaceName")
     private String spaceName;
@@ -60,8 +72,13 @@ public class VisitorStatistics {
     @ColumnInfo(name = "age25over_female")
     private int age25over_female;
 
-    public VisitorStatistics(String date, String spaceName){
+    public VisitorStatistics(){}
+
+    public VisitorStatistics(String date, String SpaceTask, String SpaceClassification, String SpaceArea,String spaceName){
         this.date = date;
+        this.spaceTask = SpaceTask;
+        this.spaceClassification = SpaceClassification;
+        this.spaceArea = SpaceArea;
         this.spaceName = spaceName;
         this.Total = 0;
         this.total_youth = 0;
@@ -83,11 +100,14 @@ public class VisitorStatistics {
 
 
     public void Increase_infant(int gender){
+        Log.d("infanct increase", "infanct increase " + gender);
         if(gender == 1) this.age0to8_male++;
         else if(gender == 2) this.age0to8_female++;
         this.total_infant++;
     }
+
     public void Increase_youth(int gender, int age){
+        Log.d("youth increase", "youth increase " + gender + " age: " + age);
         switch(age)
         {
             case 1:
@@ -122,6 +142,7 @@ public class VisitorStatistics {
         this.total_youth++;
     }
     public void Increase_adult(int gender){
+        Log.d("adult increase", "adult increase " + gender);
         if(gender == 1){
             this.age25over_male++;
         }else if(gender == 2){
@@ -142,6 +163,27 @@ public class VisitorStatistics {
     }
     public void setDate(String date){
         this.date = date;
+    }
+
+    public String getSpaceTask(){
+        return this.spaceTask;
+    }
+    public void setSpaceTask(String spaceTask){
+        this.spaceTask = spaceTask;
+    }
+
+    public String getSpaceClassification(){
+        return this.spaceClassification;
+    }
+    public void setSpaceClassification(String spaceClassification){
+        this.spaceClassification = spaceClassification;
+    }
+
+    public String getSpaceArea(){
+        return this.spaceArea;
+    }
+    public void setSpaceArea(String spaceArea){
+        this.spaceArea = spaceArea;
     }
 
     public String getSpaceName(){
@@ -261,5 +303,28 @@ public class VisitorStatistics {
     }
     public void setAge25over_female(int age25over_female) {
         this.age25over_female = age25over_female;
+    }
+    public void show_statistics(){
+        String tag = "statistics";
+        Log.d(tag+" date",this.date);
+        Log.d(tag+" spaceTask",this.spaceTask);
+        Log.d(tag+" spaceClassification",this.spaceClassification);
+        Log.d(tag+" spaceArea",this.spaceArea);
+        Log.d(tag+" spaceName",this.spaceName);
+        Log.d(tag+" total_youth",this.total_youth + "");
+        Log.d(tag+" age9to13_male",this.age9to13_male + "");
+        Log.d(tag+" age9to13_female",this.age9to13_female + "");
+        Log.d(tag+" age14to16_male",this.age14to16_male + "");
+        Log.d(tag+" age14to16_female",this.age14to16_female + "");
+        Log.d(tag+" age17to19_male",this.age17to19_male + "");
+        Log.d(tag+" age17to19_female",this.age17to19_female + "");
+        Log.d(tag+" age20to24_male",this.age20to24_male + "");
+        Log.d(tag+" age20to24_female",this.age20to24_female + "");
+        Log.d(tag+" total_infant",this.total_infant + "");
+        Log.d(tag+" age0to8_male",this.age0to8_male + "");
+        Log.d(tag+" age0to8_female",this.age0to8_female + "");
+        Log.d(tag+" total_adult",this.total_adult + "");
+        Log.d(tag+" age25over_male",this.age25over_male + "");
+        Log.d(tag+" age25over_female",this.age25over_female + "");
     }
 }

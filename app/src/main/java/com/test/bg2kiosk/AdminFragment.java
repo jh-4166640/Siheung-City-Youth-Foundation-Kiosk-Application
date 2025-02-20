@@ -26,6 +26,8 @@ import android.widget.TableRow;
 import android.view.Gravity;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
+
 import androidx.lifecycle.ViewModelProvider;
 
 
@@ -40,14 +42,12 @@ import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.io.File;
-import java.io.*;
 import java.io.IOException;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
+
 
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -90,7 +90,6 @@ public class AdminFragment extends Fragment{
             if(office_name.length()==0){
                 spaceViewModel.setOfficeName("시설명 미입력");
             }else{
-
                 spaceViewModel.setOfficeName(office_name);
                 adminBinding.OfficeName.setText(office_name);
             }
@@ -329,26 +328,28 @@ public class AdminFragment extends Fragment{
                     for(int i = 0; i<headRows.length;i++){
                         headRow.createCell(i).setCellValue(headRows[i]);
                     }
+                    Log.d("make header", "헤더 행 생성 완료");
                 }
-                int LastLow = statistic_sheet.getLastRowNum();
+                int LastRow = statistic_sheet.getLastRowNum() + 1;
                 for (VisitorStatistics stats : statisticsList){
-                    Row row = statistic_sheet.createRow(LastLow++);
+                    Log.d("Last Row", LastRow + "");
+                    Row row = statistic_sheet.createRow(LastRow++);
                     String date = stats.getDate();
                     String month;
-                    if(date.charAt(3) == '0')
+                    if(date.charAt(5) == '0')
                     {
-                        month = date.substring(3,4) + "월";
+                        month = date.charAt(6) + "월";
                     } else {
-                        month = date.substring(3,5) + "월";
+                        month = date.substring(5,7) + "월";
                     }
                     row.createCell(0).setCellValue(month); // 월
                     row.createCell(1).setCellValue(date);  // 일자
 
                     row.createCell(2).setCellValue(spaceViewModel.getDivision().getValue()); ///수정 해야 할 것 -> text Edit으로 몇본부 인지 받아오기(ex 사업3본부)
                     row.createCell(3).setCellValue(spaceViewModel.getOfficeName().getValue()); ///text Edit으로 무슨 시설인지 받아오기(ex 배곧2, 배곧1, 능곡)
-                    row.createCell(4).setCellValue("실행과제"); //얘도 적을 수 있게
-                    row.createCell(5).setCellValue("프로그램 구분"); //이것도 시설명 입력할 때 같이
-                    row.createCell(6).setCellValue("분야"); //얘도 마찬가지
+                    row.createCell(4).setCellValue(stats.getSpaceTask()); //얘도 적을 수 있게
+                    row.createCell(5).setCellValue(stats.getSpaceClassification()); //이것도 시설명 입력할 때 같이
+                    row.createCell(6).setCellValue(stats.getSpaceArea()); //얘도 마찬가지
 
                     row.createCell(7).setCellValue(stats.getSpaceName()); // 프로그램명
                     row.createCell(8).setCellValue(stats.getTotal());
@@ -370,6 +371,7 @@ public class AdminFragment extends Fragment{
                     row.createCell(21).setCellValue(stats.getTotal_adult());
                     row.createCell(22).setCellValue(stats.getAge25over_male());
                     row.createCell(23).setCellValue(stats.getAge25over_female());
+                    Log.d("statistics 확인", stats.toString());
                 }
                 try(FileOutputStream fos = new FileOutputStream(inputFile)){
                     workbook.write(fos);
@@ -380,9 +382,16 @@ public class AdminFragment extends Fragment{
                     e.printStackTrace();
                     Log.e(TAG,"파일 쓰기에서 에러",e);
                     throw new RuntimeException(e);
-
                 }
                 saveToExternalStorage(inputFile);
+                getActivity().runOnUiThread(() -> {
+                    Toast.makeText(getContext(), "엑셀 데이터 저장 완료", Toast.LENGTH_SHORT).show();
+                });
+                db.visitorStatisticsDao().deleteAll();
+
+
+                //fis.close(); //이게 있어야 되는지 아닌지 모르겠음
+
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
                 Log.e(TAG,"찾을 수 없다",e);

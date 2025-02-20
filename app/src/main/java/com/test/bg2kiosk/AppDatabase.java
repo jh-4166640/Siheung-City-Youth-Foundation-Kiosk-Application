@@ -4,7 +4,7 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import android.content.Context;
 
-@Database(entities = {VisitorStatistics.class}, version = 1, exportSchema = false)
+@Database(entities = {VisitorStatistics.class}, version = 3, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
     public abstract VisitorStatisticsDAO visitorStatisticsDao();
 
