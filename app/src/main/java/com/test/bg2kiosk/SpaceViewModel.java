@@ -1,12 +1,22 @@
 // SpaceViewModel.java
 package com.test.bg2kiosk;
 
+import android.content.Context;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+
 
 public class SpaceViewModel extends ViewModel {
+
+    private static final String SPACE_FILE_NAME= "space_data.txt";
+
 
     private final MutableLiveData<String[]> spaceNames = new MutableLiveData<>(new String[0]);
     private final MutableLiveData<Integer> numOfSpace = new MutableLiveData<>(5);

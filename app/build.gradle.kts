@@ -34,12 +34,12 @@ android {
 }
 
 dependencies {
-
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.constraintlayout)
     implementation(libs.datastore.preferences.rxjava3)
+    implementation(libs.firebase.functions)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
@@ -48,10 +48,11 @@ dependencies {
     implementation("androidx.work:work-runtime:2.7.0")
     implementation("androidx.room:room-runtime:2.6.0") // Room 라이브러리
     annotationProcessor("androidx.room:room-compiler:2.6.0") // Room 컴파일러 (Java용)
-    //implementation("org.apache.poi","poi","4.1.2")
     implementation("org.apache.poi:poi:5.2.3")
     implementation("org.apache.poi:poi-ooxml:5.2.3")
-    implementation("androidx.datastore:datastore-preferences:1.0.0")
+    implementation("androidx.datastore:datastore-preferences:1.1.2")
+    implementation("com.google.guava:guava:31.1-android");
+    //implementation("androidx.datastore:datastore-preferences:1.0.0")
     implementation("androidx.core:core-ktx:1.6.0")
     //implementation("android.arch.lifecycle:viewmodel:1.1.1")
     //implementation("android.arch.lifecycle:extensions:1.1.1")

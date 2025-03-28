@@ -1,8 +1,11 @@
 package com.test.bg2kiosk;
 //MainActivity.java
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.widget.EditText;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -27,7 +30,6 @@ public class MainActivity extends AppCompatActivity {
         // TabLayout 및 ViewPager2 초기화
         setupViewPagerAndTabs();
     }
-
     private void setupViewPagerAndTabs() {
         // ViewPager2 어댑터 설정
         binding.viewPager.setAdapter(new FragmentAdapter(this));

@@ -143,7 +143,7 @@ public class VisitorFragment extends Fragment {
                                     break;
                             }
                         }
-                        statistics.show_statistics();
+                        //statistics.show_statistics();
                         int currentExp = exp;
 
                         getActivity().runOnUiThread(() -> {

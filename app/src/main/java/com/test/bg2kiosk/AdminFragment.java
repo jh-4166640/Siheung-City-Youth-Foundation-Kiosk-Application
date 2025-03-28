@@ -83,7 +83,6 @@ public class AdminFragment extends Fragment{
             if(division.length() == 0){
                 spaceViewModel.setDivision("본부 미입력");
             }else{
-
                 spaceViewModel.setDivision(division);
                 adminBinding.Division.setText(division);
             }
@@ -100,7 +99,6 @@ public class AdminFragment extends Fragment{
             Toast.makeText(getContext(), "변경사항이 저장되었습니다.", Toast.LENGTH_SHORT).show();
         });
         CreateSpaceEditor(spaceViewModel.getNumOfSpace().getValue());
-
 
         return adminBinding.getRoot();
     }
